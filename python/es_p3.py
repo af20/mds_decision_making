@@ -32,7 +32,7 @@
 from pulp import *
 import pandas as pd
 
-prob = LpProblem('Model_1', LpMinimize)
+prob = LpProblem('Model_3', LpMinimize)
 x1 = LpVariable('x1', lowBound=0, cat='Integer')
 x2 = LpVariable('x2', lowBound=0, cat='Integer')
 x3 = LpVariable('x3', lowBound=0, cat='Integer')
@@ -74,5 +74,5 @@ data = {
   'Production': [value(x1) + value(x2), value(x3) + value(x4), value(x5) + value(x6)],
 }
 df = pd.DataFrame(data, index=['Ethiopia', 'Tanzania', 'Nigeria'])
-print('Model 3 (with Fixed Costs and Min Prod) ==> Costs:', value(prob.objective), '$')
+print(prob.name + ' (with Fixed Costs and Min Prod) ==> Costs:', value(prob.objective), '$')
 print(df)

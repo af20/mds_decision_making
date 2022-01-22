@@ -26,7 +26,7 @@
 from pulp import *
 import pandas as pd
 
-prob = LpProblem('Model_1', LpMinimize)
+prob = LpProblem('Model_2', LpMinimize)
 x1 = LpVariable('x1', lowBound=0, cat='Integer')
 x2 = LpVariable('x2', lowBound=0, cat='Integer')
 x3 = LpVariable('x3', lowBound=0, cat='Integer')
@@ -63,5 +63,5 @@ data = {
   'Plant': [value(y1), value(y2), value(y3)],
 }
 df = pd.DataFrame(data, index=['Ethiopia', 'Tanzania', 'Nigeria'])
-print('Model 2 (with Fixed Costs) ==> Costs:', value(prob.objective), '$')
+print(prob.name + ' (with Fixed Costs) ==> Costs:', value(prob.objective), '$')
 print(df)

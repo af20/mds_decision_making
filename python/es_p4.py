@@ -35,7 +35,7 @@
 from pulp import *
 import pandas as pd
 
-prob = LpProblem('Model_1', LpMinimize)
+prob = LpProblem('Model_4', LpMinimize)
 x1 = LpVariable('x1', lowBound=0, cat='Integer')
 x2 = LpVariable('x2', lowBound=0, cat='Integer')
 x3 = LpVariable('x3', lowBound=0, cat='Integer')
@@ -75,5 +75,5 @@ data = {
   'Plant': [value(y1), value(y2), value(y3)],
 }
 df = pd.DataFrame(data, index=['Ethiopia', 'Tanzania', 'Nigeria'])
-print('Model 4 (2 Max Plants) ==> Costs:', value(prob.objective), '$')
+print(prob.name + ' (2 Max Plants) ==> Costs:', value(prob.objective), '$')
 print(df)

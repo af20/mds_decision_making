@@ -35,7 +35,7 @@ x6 = LpVariable('x6', lowBound=0, cat='Integer')
 prob += x1*21 + x2*22.5 + x3*22.5 + x4*24.5 + x5*23 + x6*25.5
 
 # constraints
-prob += x1 + x2 <= 425
+prob += x1 + x2 <= 425, 'Capability Ethiopia'
 prob += x3 + x4 <= 400
 prob += x5 + x6 <= 750
 
@@ -51,5 +51,19 @@ data = {
   'Kola': [value(x2), value(x4), value(x6)]
 }
 df = pd.DataFrame(data, index=['Ethiopia', 'Tanzania', 'Nigeria'])
-print('Model 1 ==> Costs:', value(prob.objective), '$')
+print(prob.name + ' ==> Costs:', value(prob.objective), '$')
 print(df)
+
+
+'''
+  Shadow Prices:
+    The change in optimal value of the objective function per unit increase in the right-handside for a constraint, given everything else remain unchanged.
+    e.g. Represent changes in total costs per increase in production capacity
+  
+  Slack:
+    slack > 0, then not-binding || slack = 0, then binding ==> Changing binding constraint, changes solution
+
+  How to print Shadow Prices and Slacks:
+    o = [{'name':name, 'shadow price':c.pi, 'slack': c.slack} for name, c in prob.constraints.items()]
+    print(pd.DataFrame(o))
+'''
