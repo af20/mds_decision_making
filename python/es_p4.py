@@ -42,9 +42,9 @@ x3 = LpVariable('x3', lowBound=0, cat='Integer')
 x4 = LpVariable('x4', lowBound=0, cat='Integer')
 x5 = LpVariable('x5', lowBound=0, cat='Integer')
 x6 = LpVariable('x6', lowBound=0, cat='Integer')
-y1 = LpVariable('y1', lowBound=0, cat='Binary')
-y2 = LpVariable('y2', lowBound=0, cat='Binary')
-y3 = LpVariable('y3', lowBound=0, cat='Binary')
+y1 = LpVariable('y1', cat='Binary')
+y2 = LpVariable('y2', cat='Binary')
+y3 = LpVariable('y3', cat='Binary')
 
 
 # obj function

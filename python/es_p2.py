@@ -74,10 +74,14 @@ prob += x5 + x6 - y3*750 <= 0     # Nigeria       3000
 
 
 # solve problem
-status = prob.solve(PULP_CBC_CMD(msg=0)) # "PULP_CBC_CMD(msg=0)" comando per far sì che il solver NON stampi i log
+status = prob.solve(solver=PULP_CBC_CMD(msg=0))
+#  "PULP_CBC_CMD:   il solver
+#   (msg=0)":       per far sì che il solver NON stampi i log
+
 '''Param 
       solver:  Optional: the specific solver to be used, defaults to the default solver.
 
+    v_solvers = [PULP_CBC_CMD, GLPK_CMD, COIN_CMD, PYGLPK, CPLEX_CMD, CPLEX_PY, GUROBI, GUROBI_CMD, MOSEK, XPRESS, COINMP_DLL, CHOCO_CMD, MIPCL_CMD, SCIP_CMD]
     _all_solvers = [
         PULP_CBC_CMD,       # 1° default
         GLPK_CMD,           # 2° default
@@ -105,3 +109,18 @@ data = {
 df = pd.DataFrame(data, index=['Ethiopia', 'Tanzania', 'Nigeria'])
 print(prob.name + ' (with Fixed Costs) ==> Costs:', value(prob.objective), '$')
 print(df)
+
+
+
+'''
+  Shadow Prices:
+    The change in optimal value of the objective function per unit increase in the right-handside for a constraint, given everything else remain unchanged.
+    e.g. Represent changes in total costs per increase in production capacity
+  
+  Slack:
+    slack > 0, then not-binding || slack = 0, then binding ==> Changing binding constraint, changes solution
+
+  How to print Shadow Prices and Slacks:
+    o = [{'name':name, 'shadow price':c.pi, 'slack': c.slack} for name, c in prob.constraints.items()]
+    print(pd.DataFrame(o))
+'''
