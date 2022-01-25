@@ -59,7 +59,11 @@ print(df)
   Shadow Prices:
     The change in optimal value of the objective function per unit increase in the right-handside for a constraint, given everything else remain unchanged.
     e.g. Represent changes in total costs per increase in production capacity
-  
+
+    The Shadow Price corresponds to the exchange rate of the Linear Programming model’s optimal value compared to the marginal modification of the right hand side (RHS) of the constraint. 
+    It is understood that a marginal modification allows the conservation of the optimal base of the problem (identical original basic variables in the case of the Simplex Method) 
+    or the geometry of the problem (maintain the original active constraints).
+
   Slack:
     slack > 0, then not-binding || slack = 0, then binding ==> Changing binding constraint, changes solution
 

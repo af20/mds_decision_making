@@ -35,7 +35,7 @@ from pulp import *
 prob = LpProblem('Model_2', LpMinimize)  # Creates an LP Problem ---> LpMinimize  or  LpMaximize
 
 # Aggiungo al problema le variabili
-x1 = LpVariable('x1', lowBound=0, cat='Integer')  # Variabile Intera >= 0
+x1 = LpVariable('x1', lowBound=0)#, cat='Integer')  # Variabile Intera >= 0
 '''
   name:     The name of the variable used in the output, e.g. 'x1'
   upBound:  The upper bound on this variable's range.
@@ -45,11 +45,11 @@ x1 = LpVariable('x1', lowBound=0, cat='Integer')  # Variabile Intera >= 0
   cat:      Integer, Binary or Continuous(default)
 '''
 
-x2 = LpVariable('x2', lowBound=0, cat='Integer')  
-x3 = LpVariable('x3', lowBound=0, cat='Integer')
-x4 = LpVariable('x4', lowBound=0, cat='Integer')
-x5 = LpVariable('x5', lowBound=0, cat='Integer')
-x6 = LpVariable('x6', lowBound=0, cat='Integer')
+x2 = LpVariable('x2', lowBound=0)#, cat='Integer')
+x3 = LpVariable('x3', lowBound=0)#, cat='Integer')
+x4 = LpVariable('x4', lowBound=0)#, cat='Integer')
+x5 = LpVariable('x5', lowBound=0)#, cat='Integer')
+x6 = LpVariable('x6', lowBound=0)#, cat='Integer')
 y1 = LpVariable('y1', cat='Binary')               # Variabile Binaria
 y2 = LpVariable('y2', cat='Binary')
 y3 = LpVariable('y3', cat='Binary')
@@ -59,18 +59,18 @@ y3 = LpVariable('y3', cat='Binary')
 prob += x1*21 + x2*22.5 + x3*22.5 + x4*24.5 + x5*23 + x6*25.5 + y1*1500 + y2*2000 + y3*3000
 
 # constraints                     # CAPACITÀ PRODUTTIVA (max unità per Paese)
-prob += x1 + x2 <= 425            # Etiopia       425
-prob += x3 + x4 <= 400            # Tanzania      400
-prob += x5 + x6 <= 750            # Nigeria       750
+prob += x1 + x2 <= 425, 'C. Eti'            # Etiopia       400
+prob += x3 + x4 <= 400, 'C. Tan'            # Tanzania      400
+prob += x5 + x6 <= 750, 'C. Nig'            # Nigeria       750
                                   
                                   # DOMANDA, somma dei 3 Paesi
-prob += x1 + x3 + x5 >= 550       # Ginko         550
-prob += x2 + x4 + x6 >= 450       # Kola          450
+prob += x1 + x3 + x5 >= 550, 'D. Ginko'         # Ginko         550
+prob += x2 + x4 + x6 >= 450, 'D. Kola'          # Kola          450
 
                                   # COSTI FISSI se viene prodotta 1+ unità
-prob += x1 + x2 - y1*425 <= 0     # Etiopia       1500
-prob += x3 + x4 - y2*400 <= 0     # Tanzania      2000
-prob += x5 + x6 - y3*750 <= 0     # Nigeria       3000
+prob += x1 + x2 - y1*425 <= 0, 'CF. Eti'     # Etiopia       1500
+prob += x3 + x4 - y2*400 <= 0, 'CF. Tan'     # Tanzania      2000
+prob += x5 + x6 - y3*750 <= 0, 'CF. Nig'     # Nigeria       3000
 
 
 # solve problem
@@ -114,9 +114,11 @@ print(df)
 
 '''
   Shadow Prices:
-    The change in optimal value of the objective function per unit increase in the right-handside for a constraint, given everything else remain unchanged.
-    e.g. Represent changes in total costs per increase in production capacity
-  
+    Nel contesto di un problema di massimizzazione con un vincolo (o ottimizzazione vincolata), il prezzo ombra sul vincolo è la quantità di cui aumenterebbe 
+    la funzione obiettivo della massimizzazione se il vincolo fosse allentato di un'unità. 
+
+    In altre parole, il prezzo ombra è l' utilità marginale di allentare la costante o, al contrario, il costo marginale del rafforzamento del vincolo.
+
   Slack:
     slack > 0, then not-binding || slack = 0, then binding ==> Changing binding constraint, changes solution
 
@@ -124,3 +126,5 @@ print(df)
     o = [{'name':name, 'shadow price':c.pi, 'slack': c.slack} for name, c in prob.constraints.items()]
     print(pd.DataFrame(o))
 '''
+o = [{'name':name, 'shadow price':c.pi, 'slack': c.slack} for name, c in prob.constraints.items()]
+print(pd.DataFrame(o))
