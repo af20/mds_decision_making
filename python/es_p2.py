@@ -59,7 +59,7 @@ y3 = LpVariable('y3', cat='Binary')
 prob += x1*21 + x2*22.5 + x3*22.5 + x4*24.5 + x5*23 + x6*25.5 + y1*1500 + y2*2000 + y3*3000
 
 # constraints                     # CAPACITÀ PRODUTTIVA (max unità per Paese)
-prob += x1 + x2 <= 425, 'C. Eti'            # Etiopia       400
+prob += x1 + x2 <= 425, 'C. Eti'            # Etiopia       425
 prob += x3 + x4 <= 400, 'C. Tan'            # Tanzania      400
 prob += x5 + x6 <= 750, 'C. Nig'            # Nigeria       750
                                   
