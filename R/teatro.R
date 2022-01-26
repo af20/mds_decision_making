@@ -61,12 +61,6 @@ teatro <- function(mic3){
 
 
 search_solution = function(N_TESTS){
-  mic1 <- c(0,0) # coordinate del 1� microfono fisso
-  mic2 <- c(20,0) # coordinate del 2� microfono fisso
-  
-  # simulo movimenti attori, con rumore casuale. Gli attori si muovono in 5 posizioni principali durante lo spettacolo
-  mov_attoreA <- matrix(c(2,2,9,3,12,5,8,7,10,7),2,5)
-  mov_attoreB <- matrix(c(18,2,15,4,12,5,10,4,15,3),2,5)
   
   MAX_INTENSITY = 0
   OPTIMAL_XY = c(0,0)
@@ -88,7 +82,13 @@ search_solution = function(N_TESTS){
 
 # ................................................................................#
 
-N_TESTS = 100000
+N_TESTS = 10000
+mic1 <- c(0,0) # coordinate del 1 microfono fisso
+mic2 <- c(20,0) # coordinate del 2 microfono fisso
+
+# simulo movimenti attori, con rumore casuale. Gli attori si muovono in 5 posizioni principali durante lo spettacolo
+mov_attoreA <- matrix(c(2,2,9,3,12,5,8,7,10,7),2,5)
+mov_attoreB <- matrix(c(18,2,15,4,12,5,10,4,15,3),2,5)
 
 t_start = Sys.time()
 solution = search_solution(N_TESTS)
@@ -100,4 +100,3 @@ cat("     MAX_INTENSITY:", solution$MAX_INTENSITY, "     OPTIMAL_XY:", solution$
 # 10k:   0.64
 # 100k:  6.36
 # 1kk:   63.67
-
