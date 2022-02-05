@@ -66,7 +66,9 @@ search_solution = function(N_TESTS){
   OPTIMAL_XY = c(0,0)
   
   for (i in c(1:N_TESTS)) {
-    xy = floor(runif(2, min=0, max=20)) # Generate TWO integer random numbers between 0 and 20
+    x = floor(runif(1, min=0, max=20)) # Generate TWO integer random numbers between 0 and 20
+    y = floor(runif(1, min=0, max=10))
+    xy = c(x,y)
 
     M_result = teatro(xy)
     sum_M = sum(M_result)   #    --> massimizzare questo vettore che ritorna f_teatro, perch� contiene le intensit�
