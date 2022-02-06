@@ -65,14 +65,14 @@ get_mics_intensity = function(mic3){
 
 
 find_best_xy_ALGO_1 = function() {
-
+  
   Max_Intensity = 0;
   Best_xy = 0;
-
+  
   for (i in c(1:N_TESTS)) {
     xy = c(runif(1, min=0, max=20), runif(1, min=0, max=10))
     intensities = get_mics_intensity(xy)
-
+    
     if (intensities > Max_Intensity) {
       Max_Intensity = intensities
       Best_xy = xy
@@ -86,20 +86,20 @@ find_best_xy_ALGO_1 = function() {
 
 
 find_best_xy_ALGO_2 = function() {
-
+  
   x = runif(1, min=0, max=20) # Generate TWO random numbers between 0 and 20
   y = runif(1, min=0, max=10)
   Best_xy = c(x,y);
   Max_Intensity = get_mics_intensity(Best_xy)
-
+  
   xy = c(runif(1, min=0, max=20), runif(1, min=0, max=10))
-
+  
   for (i in c(1:N_TESTS)) {
-    d = rnorm(2,mean = 0, sd = 0.1)
+    d = rnorm(2, mean = 0, sd = 1)
     xy = xy + d
-
+    
     intensities = get_mics_intensity(xy)
-
+    
     if (intensities > Max_Intensity) {
       Max_Intensity = intensities
       Best_xy = xy
@@ -115,16 +115,7 @@ find_best_xy_ALGO_2 = function() {
 
 find_best_xy_algo_FDSA = function() {
   L = numeric()
-  
-  #estremi del range del primo parametro
-  min_1 = 0
-  max_1 = 20
-  
-  #estremi del range del secondo parametro
-  min_2 = 0
-  max_2 = 10
-  
-  
+    
   #scelgo i parametri del metodo
   alpha = 0.3
   gamma = 0.1
@@ -142,7 +133,7 @@ find_best_xy_algo_FDSA = function() {
     
     ck = c/(i+1)^gamma   # approssimo la derivata con le differenze finite
     
-
+    
     gx = (get_mics_intensity(c(x+ck, y)) - get_mics_intensity(c(x-ck, y))) / (2*ck) # rapporto incrementale variando x
     gy = (get_mics_intensity(c(x, y+ck)) - get_mics_intensity(c(x, y-ck))) / (2*ck) # rapporto incrementale variando y
     
@@ -154,10 +145,10 @@ find_best_xy_algo_FDSA = function() {
     
     i = i+1
   }
-
+  
   Best_xy = c(x,y)
   Max_Intensity = get_mics_intensity(Best_xy)
-    
+  
   my_list = list("Algo" = 'Algo_FDSA', "Max_Intensity" = Max_Intensity, "Best_xy" = Best_xy)
   return(my_list)
 }
@@ -165,33 +156,95 @@ find_best_xy_algo_FDSA = function() {
 
 
 
+do_GA = function() {
+  library(graphics)
+  library(stats)
+  library(GA)
+
+  f2  =  function(x)  -get_mics_intensity(x[1])
+
+  GA  =  ga(type = "real-valued", 
+          fitness = f2,
+          lower = 0, upper = 20, 
+          popSize = 50, maxiter = 1000, run = 20)
+  # ?ga
+  # type:     the type of genetic algorithm to be run depending on the nature of decision variables. Possible values are:
+    #            "binary" (if decision variable is binary)    |  "real-valued" (floating numbers)     |  "permutation" (to reorder a list of objects)
+  # fitness:  the fitness function, any allowable R function which takes as input an individual string representing a potential solution, and returns a numerical value describing its "fitness".
+  # lower:    a vector of length equal to the decision variables providing the lower bounds of the search space in case of real-valued or permutation encoded optimizations.
+  # run:      se per TOT generazioni consecutive non ottengo un miglioramento, allora stoppo
+  # popSize:  il numero di campioni che trovo inizialmente, e che faccio evolvere in seguito nell'ottimizzazione genetica
+  # maxiter:  il numero massimo di iterazioni
+  
+  summary(GA)  #grafico di evoluzione fitness
+  plot(GA)
+}
+
+#do_GA()
 # ................................................................................#
 
-# 'ALGO_1', '2', 'DER', 'GA'
 
-N_TESTS = 1000
+# ....... VALORI INPUT ..........
+N_ROUNDS = 100
+N_TESTS = 100
+# ...............................
+
+
+# ....... VALORI FISSI ..........
 mic1 = c(0,0) # coordinate del 1 microfono fisso
 mic2 = c(20,0) # coordinate del 2 microfono fisso
+
 # simulo movimenti attori, con rumore casuale. Gli attori si muovono in 5 posizioni principali durante lo spettacolo
 mov_attoreA = matrix(c(2,2,9,3,12,5,8,7,10,7), 2, 5)
 mov_attoreB = matrix(c(18,2,15,4,12,5,10,4,15,3), 2, 5)
 
+#estremi del range del primo parametro
+min_1 = 0
+max_1 = 20
 
-t_start = Sys.time()
-solution = find_best_xy_algo_FDSA()
-t_delta = round(difftime(Sys.time(), t_start, units = 'secs'), 2)
-cat("   ", solution$Algo  ,"    N_TESTS:", N_TESTS,"     Max_Intensity:", solution$Max_Intensity, "     Best_xy:", solution$Best_xy, '    ( seconds:', t_delta, ')')
-
-#     Algo_2     N_TESTS: 1e+05      Max_Intensity: 426.0821      Best_xy: 12.02622 5.181662     ( seconds: 12.21 )
-#     Algo_2     N_TESTS: 1e+05      Max_Intensity: 429.7247      Best_xy: 13.19286 6.119811     ( seconds: 12.43 )
-
-
-#      Max_Intensity: 423.1785      Best_xy: 12.03933 6.010541     ( seconds: 0.73 )
-#      Max_Intensity: 416.37        Best_xy: 13.78567 6.512136     ( seconds: 0.74 )
-#      Max_Intensity: 406.9987      Best_xy: 12.51742 6.56589     ( seconds: 0.79 )
-#      Max_Intensity: 408.8642      Best_xy: 15.26344 4.186236     ( seconds: 0.74 )
-#      Max_Intensity: 409.2091      Best_xy: 13.7799 4.894619     ( seconds: 1.33 )
+#estremi del range del secondo parametro
+min_2 = 0
+max_2 = 10
+# ...............................
 
 
+
+# ------------  CALCOLI  ................#
+
+v_x = c() # vettori per plottare posizioni microfono 3
+v_y = c()
+
+T_START = Sys.time()
+for (i in c(1:N_ROUNDS)) {
+  t_start = Sys.time()
+  solution = find_best_xy_algo_FDSA()
+  # find_best_xy_ALGO_1       find_best_xy_ALGO_2           find_best_xy_algo_FDSA
+  t_delta = round(difftime(Sys.time(), t_start, units = 'secs'), 2)
+  cat("   i:",i, "   ", solution$Algo, "    N_TESTS:", N_TESTS,"     Max_Intensity:", solution$Max_Intensity, "     Best_xy:", solution$Best_xy, '    ( seconds:', t_delta, ')\n')
+  v_x = c(v_x, solution$Best_xy[1])
+  v_y = c(v_y, solution$Best_xy[2])
+}
+
+t_delta = round(difftime(Sys.time(), T_START, units = 'secs'), 2)
+cat("    ", solution$Algo, "    N°tests done:", N_ROUNDS*N_TESTS, '    ( seconds:', t_delta, ')\n')
+
+# ...............................
+
+
+
+# ------------ PLOTS ................#
+# Microfoni 1,2,3
+plot(v_x, v_y, main = solution$Algo, col='red', pch=1,
+     xlab = "X axis", ylab = "Y axis",
+     xlim = c(0,20), ylim = c(0,10))
+points(0,0, col='red', pch=2)
+points(20,0, col='red', pch=2)
+
+# Attori A e B
+for (i in c(1:dim(mov_attoreA)[2])) {
+  points(mov_attoreA[1,i], mov_attoreA[2,i], col='blue', pch = 'A')
+  points(mov_attoreB[1,i], mov_attoreB[2,i], col='blue', pch = 'B')
+}
+# ...............................
 
 
