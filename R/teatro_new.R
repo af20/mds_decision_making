@@ -134,9 +134,9 @@ find_best_xy_FDSA = function() {
   #scelgo i parametri del metodo
   alpha = -0.3
   gamma = -0.1
-  a = 1
+  a = 0.01
   A = N_TESTS * 0.075
-  c = -10 # se -100 tutti sparsi,   se -10 tutti a 0 o 20 (x)
+  c = -1
   
   #scelgo il guess iniziale per i parametri in modo casuale
   x = runif(1, min_1, max_1) 
@@ -239,7 +239,7 @@ v_y = c()
 T_START = Sys.time()
 for (i in c(1:N_ROUNDS)) {
   t_start = Sys.time()
-  solution = find_best_xy_GENETIC()
+  solution = find_best_xy_FDSA()
 
   # find_best_xy_ALGO_1       find_best_xy_ALGO_2     find_best_xy_FDSA     find_best_xy_GENETIC
   t_delta = round(difftime(Sys.time(), t_start, units = 'secs'), 2)
