@@ -110,7 +110,7 @@ find_best_xy_ALGO_2 = function() {
   xy = c(runif(1, min=0, max=20), runif(1, min=0, max=10))
   
   for (i in c(1:N_TESTS)) {
-    d = rnorm(2, mean = 0, sd = 1)
+    d = rnorm(2, mean = 0, sd = 2)
     xy = xy + d
     
     intensities = get_mics_intensity(xy)
@@ -176,7 +176,7 @@ find_best_xy_GENETIC = function() {
   library(stats)
   library(GA)
   
-  f2  =  function(x)  get_mics_intensity(x[1]) + 1000
+  f2  =  function(x)  get_mics_intensity(x) + 1000
 
   GA  =  ga(type = "real-valued", 
           fitness = f2,
@@ -239,7 +239,7 @@ v_y = c()
 T_START = Sys.time()
 for (i in c(1:N_ROUNDS)) {
   t_start = Sys.time()
-  solution = find_best_xy_FDSA()
+  solution = find_best_xy_ALGO_2()
 
   # find_best_xy_ALGO_1       find_best_xy_ALGO_2     find_best_xy_FDSA     find_best_xy_GENETIC
   t_delta = round(difftime(Sys.time(), t_start, units = 'secs'), 2)
