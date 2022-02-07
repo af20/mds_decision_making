@@ -25,18 +25,8 @@
 "
 
 # ................................ FUNCTIONS .....................................#
-get_mics_intensity = function(mic3){
-  
-  noise1 = runif(5,0,2)
-  noise2 = runif(5,0,2)
-  noise = matrix(c(noise1,noise2),2,5)
-  mov_attoreA = mov_attoreA + noise
-  
-  noise1 = runif(5,0,2)
-  noise2 = runif(5,0,2)
-  noise = matrix(c(noise1,noise2),2,5)
-  mov_attoreB = mov_attoreB + noise
-  
+
+compute_mics_intensity = function(mov_attoreA, mov_attoreB, mic3) {
   # calcolo intensita' del suono ricevuto ad ogni mossa dai tre microfoni
   M = matrix(mic1,2,5)
   suono_mic1_A = 6*log(3000/colSums((mov_attoreA-M)^2))
@@ -58,6 +48,31 @@ get_mics_intensity = function(mic3){
   sum_intensity = sum(intensities)
   
   return(sum_intensity)
+}
+
+
+
+get_mics_intensity = function(mic3){
+  
+  noise1 = runif(5,0,2)
+  noise2 = runif(5,0,2)
+  noise = matrix(c(noise1,noise2),2,5)
+  mov_attoreA = mov_attoreA + noise
+  
+  noise1 = runif(5,0,2)
+  noise2 = runif(5,0,2)
+  noise = matrix(c(noise1,noise2),2,5)
+  mov_attoreB = mov_attoreB + noise
+  
+  sum_intensity = compute_mics_intensity(mov_attoreA, mov_attoreB, mic3)
+  return (sum_intensity)
+}
+
+
+get_mics_intensity_with_NO_noise = function(mic3){
+  
+  sum_intensity = compute_mics_intensity(mov_attoreA, mov_attoreB, mic3)
+  return (sum_intensity)
 }
 
 
@@ -113,15 +128,15 @@ find_best_xy_ALGO_2 = function() {
 
 
 
-find_best_xy_algo_FDSA = function() {
+find_best_xy_FDSA = function() {
   L = numeric()
     
   #scelgo i parametri del metodo
-  alpha = 0.3
-  gamma = 0.1
-  a = 0.5
+  alpha = -0.3
+  gamma = -0.1
+  a = 1
   A = N_TESTS * 0.075
-  c = 1
+  c = -10 # se -100 tutti sparsi,   se -10 tutti a 0 o 20 (x)
   
   #scelgo il guess iniziale per i parametri in modo casuale
   x = runif(1, min_1, max_1) 
@@ -141,7 +156,7 @@ find_best_xy_algo_FDSA = function() {
     
     x = min(max(x - ak*gx, min_1), max_1)
     y = min(max(y - ak*gy, min_2), max_2)
-    cat(" i",i,"     ck:", ck, '    ak', ak, "    gx;", gx, '      gy', gy, "     x", x, "     y", y, "\n")
+    #cat(" i",i,"     ck:", ck, '    ak', ak, "    gx;", gx, '      gy', gy, "     x", x, "     y", y, "\n")
     
     i = i+1
   }
@@ -156,17 +171,18 @@ find_best_xy_algo_FDSA = function() {
 
 
 
-do_GA = function() {
+find_best_xy_GENETIC = function() {
   library(graphics)
   library(stats)
   library(GA)
-
-  f2  =  function(x)  -get_mics_intensity(x[1])
+  
+  f2  =  function(x)  get_mics_intensity(x[1]) + 1000
 
   GA  =  ga(type = "real-valued", 
           fitness = f2,
-          lower = 0, upper = 20, 
-          popSize = 50, maxiter = 1000, run = 20)
+          lower = c(min_1, min_2), 
+          upper = c(max_1, max_2), 
+          popSize = 100, maxiter = 250, run = 20, monitor =FALSE)
   # ?ga
   # type:     the type of genetic algorithm to be run depending on the nature of decision variables. Possible values are:
     #            "binary" (if decision variable is binary)    |  "real-valued" (floating numbers)     |  "permutation" (to reorder a list of objects)
@@ -176,11 +192,12 @@ do_GA = function() {
   # popSize:  il numero di campioni che trovo inizialmente, e che faccio evolvere in seguito nell'ottimizzazione genetica
   # maxiter:  il numero massimo di iterazioni
   
-  summary(GA)  #grafico di evoluzione fitness
-  plot(GA)
-}
+  #summary(GA)  #grafico di evoluzione fitness
+  #plot(GA)
 
-#do_GA()
+  my_list = list("Algo" = 'Algo Genetic', "Max_Intensity" = GA@fitness[1], "Best_xy" = c(GA@solution[1], GA@solution[2]))
+  return(my_list)
+}
 # ................................................................................#
 
 
@@ -214,11 +231,13 @@ max_2 = 10
 v_x = c() # vettori per plottare posizioni microfono 3
 v_y = c()
 
+
 T_START = Sys.time()
 for (i in c(1:N_ROUNDS)) {
   t_start = Sys.time()
-  solution = find_best_xy_algo_FDSA()
-  # find_best_xy_ALGO_1       find_best_xy_ALGO_2           find_best_xy_algo_FDSA
+  solution = find_best_xy_GENETIC()
+
+  # find_best_xy_ALGO_1       find_best_xy_ALGO_2     find_best_xy_FDSA     find_best_xy_GENETIC
   t_delta = round(difftime(Sys.time(), t_start, units = 'secs'), 2)
   cat("   i:",i, "   ", solution$Algo, "    N_TESTS:", N_TESTS,"     Max_Intensity:", solution$Max_Intensity, "     Best_xy:", solution$Best_xy, '    ( seconds:', t_delta, ')\n')
   v_x = c(v_x, solution$Best_xy[1])
