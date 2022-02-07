@@ -54,13 +54,13 @@ compute_mics_intensity = function(mov_attoreA, mov_attoreB, mic3) {
 
 get_mics_intensity = function(mic3){
   
-  noise1 = runif(5,0,2)
-  noise2 = runif(5,0,2)
+  noise1 = runif(5,-1,1)
+  noise2 = runif(5,-1,1)
   noise = matrix(c(noise1,noise2),2,5)
   mov_attoreA = mov_attoreA + noise
   
-  noise1 = runif(5,0,2)
-  noise2 = runif(5,0,2)
+  noise1 = runif(5,-1,1)
+  noise2 = runif(5,-1,1)
   noise = matrix(c(noise1,noise2),2,5)
   mov_attoreB = mov_attoreB + noise
   
@@ -215,6 +215,10 @@ mic2 = c(20,0) # coordinate del 2 microfono fisso
 mov_attoreA = matrix(c(2,2,9,3,12,5,8,7,10,7), 2, 5)
 mov_attoreB = matrix(c(18,2,15,4,12,5,10,4,15,3), 2, 5)
 
+#mov_attoreA = matrix(c(10,5,10,5,10,5,10,5,10,5), 2, 5)
+#mov_attoreB = matrix(c(10,5,10,5,10,5,10,5,10,5), 2, 5)
+
+
 #estremi del range del primo parametro
 min_1 = 0
 max_1 = 20
@@ -245,7 +249,7 @@ for (i in c(1:N_ROUNDS)) {
 }
 
 t_delta = round(difftime(Sys.time(), T_START, units = 'secs'), 2)
-cat("    ", solution$Algo, "    N°tests done:", N_ROUNDS*N_TESTS, '    ( seconds:', t_delta, ')\n')
+cat("    ", solution$Algo, "    Nï¿½tests done:", N_ROUNDS*N_TESTS, '    ( seconds:', t_delta, ')\n')
 
 # ...............................
 
