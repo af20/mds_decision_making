@@ -93,7 +93,7 @@ find_best_xy_ALGO_1 = function() {
       Best_xy = xy
     }
   }
-  my_list = list("Algo" = 'Algo_1', "Max_Intensity" = Max_Intensity, "Best_xy" = Best_xy)
+  my_list = list("Algo" = 'Algo 1', "Max_Intensity" = Max_Intensity, "Best_xy" = Best_xy)
   return(my_list)
 }
 
@@ -107,7 +107,7 @@ find_best_xy_ALGO_2 = function() {
   Best_xy = c(x,y);
   Max_Intensity = get_mics_intensity(Best_xy)
   
-  xy = c(runif(1, min=0, max=20), runif(1, min=0, max=10))
+  xy = c(x, y)
   
   for (i in c(1:N_TESTS)) {
     d = rnorm(2, mean = 0, sd = 2)
@@ -120,7 +120,7 @@ find_best_xy_ALGO_2 = function() {
       Best_xy = xy
     }
   }
-  my_list = list("Algo" = 'Algo_2', "Max_Intensity" = Max_Intensity, "Best_xy" = Best_xy)
+  my_list = list("Algo" = 'Algo 2', "Max_Intensity" = Max_Intensity, "Best_xy" = Best_xy)
   return(my_list)
 }
 
@@ -164,7 +164,7 @@ find_best_xy_FDSA = function() {
   Best_xy = c(x,y)
   Max_Intensity = get_mics_intensity(Best_xy)
   
-  my_list = list("Algo" = 'Algo_FDSA', "Max_Intensity" = Max_Intensity, "Best_xy" = Best_xy)
+  my_list = list("Algo" = 'Algo FDSA', "Max_Intensity" = Max_Intensity, "Best_xy" = Best_xy)
   return(my_list)
 }
 
@@ -249,7 +249,7 @@ for (i in c(1:N_ROUNDS)) {
 }
 
 t_delta = round(difftime(Sys.time(), T_START, units = 'secs'), 2)
-cat("    ", solution$Algo, "    N�tests done:", N_ROUNDS*N_TESTS, '    ( seconds:', t_delta, ')\n')
+cat("    ", solution$Algo, "    N_tests done:", N_ROUNDS*N_TESTS, '    ( seconds:', t_delta, ')\n')
 
 # ...............................
 
