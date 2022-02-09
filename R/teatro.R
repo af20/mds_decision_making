@@ -77,7 +77,7 @@ search_solution = function(N_TESTS){
       OPTIMAL_XY = xy
     }
   }
-  
+  # ciao ragazzi
   my_list = list("MAX_INTENSITY" = MAX_INTENSITY, "OPTIMAL_XY" = OPTIMAL_XY)
   return(my_list)
 }
