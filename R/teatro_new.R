@@ -132,11 +132,11 @@ find_best_xy_FDSA = function() {
   L = numeric()
     
   #scelgo i parametri del metodo
-  alpha = -0.3
-  gamma = -0.1
-  a = 0.01
-  A = N_TESTS * 0.075
-  c = -1
+  alpha = -0.3 # al denominatore delle variazioni  |   se negativo lo rende <1, altrimenti >1
+  gamma = -0.1 # al denominatore delle variazioni  |   più è piccolo, più le differenze del rapporto incrementale saranno piccole
+  a = -0.01 # al numeratore delle variazioni
+  A = N_TESTS * 0.075  # al denominatore delle variazioni | più è grande più la variazione si riduce
+  c = -1 # al numeratore delle variazioni
   
   #scelgo il guess iniziale per i parametri in modo casuale
   x = runif(1, min_1, max_1) 
@@ -239,7 +239,7 @@ v_y = c()
 T_START = Sys.time()
 for (i in c(1:N_ROUNDS)) {
   t_start = Sys.time()
-  solution = find_best_xy_ALGO_2()
+  solution = find_best_xy_ALGO_1()
 
   # find_best_xy_ALGO_1       find_best_xy_ALGO_2     find_best_xy_FDSA     find_best_xy_GENETIC
   t_delta = round(difftime(Sys.time(), t_start, units = 'secs'), 2)
