@@ -93,18 +93,23 @@ find_best_xy_ALGO_1 = function() {
       Best_xy = xy
     }
   }
-  my_list = list("Algo" = 'Algo 1', "Max_Intensity" = Max_Intensity, "Best_xy" = Best_xy)
+  my_list = list("Algo" = 'Algo A', 
+                 "Max_Intensity" = Max_Intensity, 
+                 "Best_xy" = Best_xy)
   return(my_list)
 }
 
 
 
 
-find_best_xy_ALGO_2 = function() {
+find_best_xy_ALGO_2 = function(Best_xy = 0) {
   
   x = runif(1, min=0, max=20) # Generate TWO random numbers between 0 and 20
   y = runif(1, min=0, max=10)
-  Best_xy = c(x,y);
+  if (Best_xy == 0) {
+    Best_xy = c(x,y);
+  }
+
   Max_Intensity = get_mics_intensity(Best_xy)
   
   xy = c(x, y)
@@ -120,12 +125,16 @@ find_best_xy_ALGO_2 = function() {
       Best_xy = xy
     }
   }
-  my_list = list("Algo" = 'Algo 2', "Max_Intensity" = Max_Intensity, "Best_xy" = Best_xy)
+  my_list = list("Algo" = 'Algo B', "Max_Intensity" = Max_Intensity, "Best_xy" = Best_xy)
   return(my_list)
 }
 
-
-
+find_best_xy_ALGO_12 = function() {
+  solution = find_best_xy_ALGO_1()
+  my_list = find_best_xy_ALGO_2(solution$Best_xy)
+  my_list$Algo = "Algo A+B"
+  return(my_list)
+}
 
 
 find_best_xy_FDSA = function() {
@@ -149,7 +158,7 @@ find_best_xy_FDSA = function() {
     ck = c/(i+1)^gamma   # approssimo la derivata con le differenze finite
     
     
-    gx = (get_mics_intensity(c(x+ck, y)) - get_mics_intensity(c(x-ck, y))) / (2*ck) # rapporto incrementale variando x
+    gx = (get_mics_intensity(c(x+ck, y)) - get_mics_intensity(c(x-ck, y))) / (2*ck) # rapporto incrementale variando x 
     gy = (get_mics_intensity(c(x, y+ck)) - get_mics_intensity(c(x, y-ck))) / (2*ck) # rapporto incrementale variando y
     
     ak = a/(i+1+A)^alpha
@@ -202,8 +211,10 @@ find_best_xy_GENETIC = function() {
 
 
 # ....... VALORI INPUT ..........
+
 N_ROUNDS = 100
 N_TESTS = 100
+
 # ...............................
 
 
@@ -239,9 +250,10 @@ v_y = c()
 T_START = Sys.time()
 for (i in c(1:N_ROUNDS)) {
   t_start = Sys.time()
-  solution = find_best_xy_ALGO_1()
+  solution = find_best_xy_ALGO_2()
 
   # find_best_xy_ALGO_1       find_best_xy_ALGO_2     find_best_xy_FDSA     find_best_xy_GENETIC
+  # find_best_xy_ALGO_12
   t_delta = round(difftime(Sys.time(), t_start, units = 'secs'), 2)
   cat("   i:",i, "   ", solution$Algo, "    N_TESTS:", N_TESTS,"     Max_Intensity:", solution$Max_Intensity, "     Best_xy:", solution$Best_xy, '    ( seconds:', t_delta, ')\n')
   v_x = c(v_x, solution$Best_xy[1])
@@ -257,16 +269,18 @@ cat("    ", solution$Algo, "    N_tests done:", N_ROUNDS*N_TESTS, '    ( seconds
 
 # ------------ PLOTS ................#
 # Microfoni 1,2,3
+#dev.new(width=10, height=5, unit="cm",noRStudioGD = TRUE)
 plot(v_x, v_y, main = solution$Algo, col='red', pch=1,
-     xlab = "X axis", ylab = "Y axis",
+     xlab = "", ylab = "",
      xlim = c(0,20), ylim = c(0,10))
 points(0,0, col='red', pch=2)
 points(20,0, col='red', pch=2)
 
+
 # Attori A e B
 for (i in c(1:dim(mov_attoreA)[2])) {
   points(mov_attoreA[1,i], mov_attoreA[2,i], col='blue', pch = 'A')
-  points(mov_attoreB[1,i], mov_attoreB[2,i], col='blue', pch = 'B')
+  points(mov_attoreB[1,i], mov_attoreB[2,i], col='green', pch = 'B')
 }
 # ...............................
 
